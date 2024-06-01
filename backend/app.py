@@ -1,4 +1,5 @@
-from flask import Flask
+from utils.audio_utils import play_audio, stop_audio
+from flask import Flask, request, Response
 
 from controllers.preferences_controller import preferences_controller_factory
 from controllers.sensor_controller import sensors_controller_factory
@@ -9,7 +10,7 @@ from services.preference_service import PreferenceService
 from services.sensor_service import SensorService
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/preferences_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/preferences_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -24,6 +25,20 @@ sensor_service = SensorService(sensor_repository)
 
 app.register_blueprint(preferences_controller_factory(preference_service))
 app.register_blueprint(sensors_controller_factory(sensor_service))
+
+@app.route('/play', methods=['GET'])
+def play():
+    video_url = request.args.get('video_url')
+    if not video_url:
+        return {'error': 'Please provide a video URL'}, 400
+
+    play_audio(video_url)
+    return Response(status=200)
+
+@app.route('/stop', methods=['GET'])
+def stop():
+    stop_audio()
+    return Response(status=200)
 
 if __name__ == '__main__':
     app.run(debug=True)
