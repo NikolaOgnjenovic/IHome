@@ -24,3 +24,11 @@ class PreferenceService:
             self.preference_repository.update_preference(preference)
             return True
         return False
+
+    def update_preference_extra_data(self, uid: str, extra_data: str) -> bool:
+        preference = self.preference_repository.get_preference_by_id(uid)
+        if preference:
+            preference.extra_data = extra_data
+            self.preference_repository.update_preference(preference)
+            return True
+        return False

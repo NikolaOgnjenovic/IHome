@@ -1,26 +1,41 @@
 import 'package:flutter/material.dart';
 import '../models/preference.dart';
 
-class PreferenceCard extends StatelessWidget {
+class PreferenceCard extends StatefulWidget {
   final Preference preference;
   final bool isSelected;
   final Function(bool) onSelected;
+  final Function(String) onSaveExtraData;
 
   const PreferenceCard({
     required this.preference,
     required this.isSelected,
     required this.onSelected,
-    super.key,
-  });
+    required this.onSaveExtraData,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _PreferenceCardState createState() => _PreferenceCardState();
+}
+
+class _PreferenceCardState extends State<PreferenceCard> {
+  late TextEditingController _extraDataController;
+
+  @override
+  void initState() {
+    super.initState();
+    _extraDataController = TextEditingController(text: widget.preference.extraData);
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onSelected(!isSelected);
+        widget.onSelected(!widget.isSelected);
       },
       child: Card(
-        color: isSelected ? Colors.blue.withOpacity(0.2) : Colors.white,
+        color: widget.isSelected ? Colors.blue.withOpacity(0.2) : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -31,19 +46,37 @@ class PreferenceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                preference.icon,
-                size: 48, // Decreased icon size
-                color: isSelected ? Colors.blue : Colors.grey[800],
+                widget.preference.icon,
+                size: 48,
+                color: widget.isSelected ? Colors.blue : Colors.grey[800],
               ),
               const SizedBox(height: 4),
               Text(
-                preference.name,
+                widget.preference.name,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12, // Decreased text size
-                  color: isSelected ? Colors.blue : Colors.grey[800],
+                  fontSize: 12,
+                  color: widget.isSelected ? Colors.blue : Colors.grey[800],
                 ),
               ),
+              if (widget.preference.extraDataHint != null) ...[
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _extraDataController,
+                  onChanged: (value) {
+                  },
+                  decoration: InputDecoration(
+                    hintText: widget.preference.extraDataHint!,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    widget.onSaveExtraData(_extraDataController.text);
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
             ],
           ),
         ),

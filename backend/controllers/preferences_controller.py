@@ -35,4 +35,16 @@ def preferences_controller_factory(preference_service: PreferenceService):
         else:
             return jsonify({'error': 'Preference not found'}), 404
 
+    @preferences_controller.route('/preferences/<uid>', methods=['PATCH'])
+    def update_preference_extra_data(uid):
+        data = request.json
+        extra_data = data.get('extra_data')
+        if not extra_data:
+            return jsonify({'error': 'Extra data not provided'}), 400
+        success = preference_service.update_preference_extra_data(uid, extra_data)
+        if success:
+            return jsonify({'message': 'Preference extra data updated successfully'}), 200
+        else:
+            return jsonify({'error': 'Preference not found'}), 404
+
     return preferences_controller

@@ -6,7 +6,10 @@ class Sensor {
   final IconData icon;
   bool isActive;
 
-  Sensor({required this.uid, required this.name, required this.icon, required this.isActive});
+  Sensor({required this.uid,
+    required this.name,
+    required this.icon,
+    required this.isActive});
 
   Map<String, dynamic> toJson() => {
     'uid': uid,
