@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:smart_home/repositories/preference_selection_repository.dart';
 import 'package:smart_home/models/preference.dart';
 
@@ -9,10 +10,15 @@ class PreferenceSelectionService {
   }
 
   Future<List<Preference>> getPreferences() async {
-    return await _repository.getPreferences();
+    final preferences = await _repository.getPreferences();
+    return preferences;
   }
 
-  Future<void> clearPreferences() async {
-    return await _repository.clearPreferences();
+  Future<void> clearSharedPrefs() async {
+    await _repository.clearSharedPrefs();
+  }
+
+  Future<bool> hasSelectedPreferences() async {
+    return await _repository.hasSelectedPreferences();
   }
 }
