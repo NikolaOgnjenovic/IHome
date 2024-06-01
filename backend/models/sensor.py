@@ -25,5 +25,5 @@ class Sensor:
             'icon': self.icon,
             'is_active': self.is_active,
             'entity_id': self.entity_id,
-            'type': self.type
+            'type': self.type.value
         }

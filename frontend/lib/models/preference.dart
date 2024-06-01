@@ -12,7 +12,7 @@ class Preference {
     'uid': uid,
     'name': name,
     'icon': icon.codePoint,
-    'isActive': isActive
+    'is_active': isActive
   };
 
   factory Preference.fromJson(Map<String, dynamic> json) {

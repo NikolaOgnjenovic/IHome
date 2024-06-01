@@ -20,8 +20,8 @@ class PreferenceRepository:
 
     def create_table_if_not_exists(self):
         with current_app.app_context():
-            inspector = inspect(self.db.engine)
-            if 'preferences' not in inspector.get_table_names():
+            preferences_count = PreferenceModel.query.count()
+            if preferences_count == 0:
                 self.db.create_all()
                 self.seed_data()
 
