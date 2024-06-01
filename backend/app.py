@@ -14,7 +14,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-
 with app.app_context():
     db.create_all()
     preference_repository = PreferenceRepository()
@@ -26,5 +25,5 @@ sensor_service = SensorService(sensor_repository)
 app.register_blueprint(preferences_controller_factory(preference_service))
 app.register_blueprint(sensors_controller_factory(sensor_service))
 
-if __name__=='__main__':
+if __name__ == '__main__':
     app.run(debug=True)
