@@ -1,0 +1,12 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant:latest
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./homeassistant/config:/config
+    restart: unless-stopped
+#    privileged: true
+#    network_mode: host
