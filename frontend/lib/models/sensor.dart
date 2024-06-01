@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class Preference {
+class Sensor {
   final String uid;
   final String name;
   final IconData icon;
 
-  Preference({required this.uid, required this.name, required this.icon});
+  Sensor({required this.uid, required this.name, required this.icon});
 
   Map<String, dynamic> toJson() => {
     'uid': uid,
@@ -13,8 +13,8 @@ class Preference {
     'icon': icon.codePoint,
   };
 
-  factory Preference.fromJson(Map<String, dynamic> json) {
-    return Preference(
+  factory Sensor.fromJson(Map<String, dynamic> json) {
+    return Sensor(
       uid: json['uid'],
       name: json['name'],
       icon: IconData(json['icon'], fontFamily: 'MaterialIcons'),
@@ -24,7 +24,7 @@ class Preference {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Preference &&
+          other is Sensor &&
               runtimeType == other.runtimeType &&
               uid == other.uid &&
               name == other.name &&
