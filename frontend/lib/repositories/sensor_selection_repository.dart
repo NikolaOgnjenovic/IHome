@@ -12,4 +12,9 @@ class SensorSelectionRepository {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_hasSelectedSensorsKey) == true;
   }
+
+  Future<void> setHasSelectedSensors(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(_hasSelectedSensorsKey, value);
+  }
 }
