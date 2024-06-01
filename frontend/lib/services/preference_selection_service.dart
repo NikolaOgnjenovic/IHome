@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:smart_home/repositories/preference_selection_repository.dart';
 import 'package:smart_home/models/preference.dart';
 import 'package:http/http.dart' as http;
 
 class PreferenceSelectionService {
-  final PreferenceSelectionRepository _repository = PreferenceSelectionRepository();
   final Uri baseUri = Uri.parse('http://127.0.0.1:5000/preferences');
   final Uri activateUri = Uri.parse('http://127.0.0.1:5000/preferences/activate');
   final Uri deactivateUri = Uri.parse('http://127.0.0.1:5000/preferences/deactivate');
@@ -20,19 +18,6 @@ class PreferenceSelectionService {
       throw Exception('Failed to load preferences: ${response.statusCode}');
     }
   }
-
-  Future<void> clearSharedPrefs() async {
-    await _repository.clearSharedPrefs();
-  }
-
-  Future<bool> hasSelectedPreferences() async {
-    return await _repository.hasSelectedPreferences();
-  }
-
-  Future<void> setHasSelectedPreferences(bool value) async {
-    return await _repository.setHasSelectedPreferences(value);
-  }
-
 
   Future<void> activatePreference(String uid) async {
     final response = await http.patch(

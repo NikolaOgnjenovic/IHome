@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import '../models/sensor.dart';
-import '../repositories/sensor_selection_repository.dart';
 import 'package:http/http.dart' as http;
 
 class SensorSelectionService {
-  final SensorSelectionRepository _repository = SensorSelectionRepository();
   final Uri baseUri = Uri.parse('http://127.0.0.1:5000/sensors');
   final Uri activateUri = Uri.parse('http://127.0.0.1:5000/sensors/activate');
   final Uri deactivateUri = Uri.parse('http://127.0.0.1:5000/sensors/deactivate');
@@ -19,18 +17,6 @@ class SensorSelectionService {
     } else {
       throw Exception('Failed to load sensors: ${response.statusCode}');
     }
-  }
-
-  Future<void> clearSharedPrefs() async {
-    await _repository.clearSharedPrefs();
-  }
-
-  Future<bool> hasSelectedSensors() async {
-    return await _repository.hasSelectedSensors();
-  }
-
-  Future<void> setHasSelectedSensors(bool value) async {
-    return await _repository.setHasSelectedSensors(value);
   }
 
   Future<void> activateSensor(String uid) async {
