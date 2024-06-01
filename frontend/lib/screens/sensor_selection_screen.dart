@@ -1,44 +1,35 @@
 import 'package:flutter/material.dart';
-import '../models/preference.dart';
-import '../services/preference_selection_service.dart';
+import '../models/sensor.dart';
 import '../services/sensor_selection_service.dart';
-import '../widgets/preference_card.dart';
+import '../widgets/sensor_card.dart';
 
-class PreferenceSelectionScreen extends StatefulWidget {
-  const PreferenceSelectionScreen({super.key});
+class SensorSelectionScreen extends StatefulWidget {
+  const SensorSelectionScreen({Key? key}) : super(key: key);
 
   @override
-  _PreferenceSelectionScreenState createState() => _PreferenceSelectionScreenState();
+  _SensorSelectionScreenState createState() => _SensorSelectionScreenState();
 }
 
-class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
-  final PreferenceSelectionService _service = PreferenceSelectionService();
-  final SensorSelectionService _sensorService = SensorSelectionService();
-
-  final List<Preference> _items = [
-    Preference(name: 'Eating ice cream', icon: Icons.icecream),
-    Preference(name: 'Going to the beach', icon: Icons.beach_access),
-    Preference(name: 'Listening to music', icon: Icons.music_note),
-    Preference(name: 'Reading books', icon: Icons.book),
-    Preference(name: 'Playing video games', icon: Icons.videogame_asset),
-    Preference(name: 'Travelling', icon: Icons.airplanemode_active),
-    Preference(name: 'Watching movies', icon: Icons.movie),
-    Preference(name: 'Cycling', icon: Icons.directions_bike),
-    Preference(name: 'Cooking', icon: Icons.local_dining),
-    Preference(name: 'Hiking', icon: Icons.terrain),
+class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
+  final SensorSelectionService _service = SensorSelectionService();
+  final List<Sensor> _items = [
+    Sensor(id: 'a1', name: 'Temperature', icon: Icons.thermostat),
+    Sensor(id: 'b2', name: 'Motion', icon: Icons.directions_walk),
+    Sensor(id: 'c3', name: 'Humidity', icon: Icons.waves),
+    Sensor(id: 'd4', name: 'CO2', icon: Icons.cloud),
   ];
-  final Set<Preference> _selectedItems = {};
+  final Set<Sensor> _selectedItems = {};
 
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
+    _loadSensors();
   }
 
-  Future<void> _loadPreferences() async {
-    final preferences = await _service.getPreferences();
+  Future<void> _loadSensors() async {
+    final sensors = await _service.getSensors();
     setState(() {
-      _selectedItems.addAll(preferences);
+      _selectedItems.addAll(sensors);
     });
   }
 
@@ -49,23 +40,18 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
     });
   }
 
-  void _toggleSelection(Preference preference, bool isSelected) {
+  void _toggleSelection(Sensor sensor, bool isSelected) {
     setState(() {
       if (isSelected) {
-        _selectedItems.add(preference);
+        _selectedItems.add(sensor);
       } else {
-        _selectedItems.remove(preference);
+        _selectedItems.remove(sensor);
       }
     });
   }
 
   Future<void> _navigateToNextScreen() async {
-    final hasSelectedSensors = await _sensorService.hasSelectedSensors();
-    if (!hasSelectedSensors) {
-      Navigator.pushNamed(context, '/sensor-selection');
-    } else {
-      Navigator.pushNamed(context, '/');
-    }
+    Navigator.pushNamed(context, '/');
   }
 
   @override
@@ -90,7 +76,7 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
-                        'Select your preferred actions', // Updated title
+                        'Select your active sensors',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20.0,
@@ -112,8 +98,8 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
                 mainAxisSpacing: 3.0,
                 children: _items.map((item) {
                   final isSelected = _selectedItems.contains(item);
-                  return PreferenceCard(
-                    preference: item,
+                  return SensorCard(
+                    sensor: item,
                     isSelected: isSelected,
                     onSelected: (isSelected) {
                       _toggleSelection(item, isSelected);
@@ -134,11 +120,11 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
                     onPressed: () async {
                       await _clearSharedPrefs();
                     },
-                    child: const Text('Clear Preferences'),
+                    child: const Text('Clear Sensors'),
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await _service.updatePreferences(_selectedItems.toList());
+                      await _service.updateSensors(_selectedItems.toList());
                       await _navigateToNextScreen();
                     },
                     child: const Text('Continue'),
