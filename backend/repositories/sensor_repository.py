@@ -1,7 +1,7 @@
 from flask import current_app
 from sqlalchemy import inspect
 from models.db.sensor_db_model import SensorModel, db
-from models.sensor import Sensor
+from models.sensor import Sensor, SensorType
 
 
 def _to_sensor(sensor_model: SensorModel) -> Sensor:
@@ -9,7 +9,9 @@ def _to_sensor(sensor_model: SensorModel) -> Sensor:
         uid=sensor_model.uid,
         name=sensor_model.name,
         icon=sensor_model.icon,
-        is_active=sensor_model.is_active
+        is_active=sensor_model.is_active,
+        entity_id=sensor_model.entity_id,
+        type=sensor_model.type
     )
 
 
@@ -51,10 +53,18 @@ class SensorRepository:
     def seed_data(self):
         with current_app.app_context():
             sensors = [
-                SensorModel(uid='a1', name='Temperature', icon=0xe42b, is_active=False),
-                SensorModel(uid='b2', name='Motion', icon=0xe536, is_active=False),
-                SensorModel(uid='c3', name='Humidity', icon=0xe318, is_active=False),
-                SensorModel(uid='d4', name='CO2', icon=0xe491, is_active=False)
+                SensorModel(uid='a1', name='Temperature', icon=0xe42b, is_active=False,
+                            entity_id='sensor.psoc6_micropython_sensornode_working_space_temperature',
+                            type=SensorType.TEMPERATURE),
+                SensorModel(uid='b2', name='Atmospheric pressure', icon=0xe536, is_active=False,
+                            entity_id='sensor.psoc6_micropython_sensornode_open_space_atmospheric_pressure',
+                            type=SensorType.ATMOSHPERIC_PRESSURE),
+                SensorModel(uid='c3', name='Humidity', icon=0xe318, is_active=False,
+                            entity_id='sensor.psoc6_micropython_sensornode_open_space_relative_humidity',
+                            type=SensorType.RELATIVE_HUMIDITY),
+                SensorModel(uid='d4', name='CO2', icon=0xe491, is_active=False,
+                            entity_id='sensor.psoc6_micropython_sensornode_working_space_co2_ppm',
+                            type=SensorType.CO2_PPM)
             ]
             for sensor in sensors:
                 self.db.session.add(sensor)

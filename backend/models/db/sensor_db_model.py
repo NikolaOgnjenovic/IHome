@@ -1,4 +1,5 @@
 from models.db.db import db
+from models.sensor import SensorType
 
 
 class SensorModel(db.Model):
@@ -7,11 +8,15 @@ class SensorModel(db.Model):
     name = db.Column(db.String, nullable=False)
     icon = db.Column(db.Integer, nullable=False)
     is_active = db.Column(db.Boolean, default=False)
+    entity_id = db.Column(db.String, nullable=False)
+    type = db.Column(db.Enum(SensorType), nullable=False)
 
     def to_dict(self):
         return {
             'uid': self.uid,
             'name': self.name,
             'icon': self.icon,
-            'is_active': self.is_active
+            'is_active': self.is_active,
+            'entity_id': self.entity_id,
+            'type': self.type.value
         }
