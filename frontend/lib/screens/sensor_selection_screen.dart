@@ -4,7 +4,7 @@ import '../services/sensor_selection_service.dart';
 import '../widgets/sensor_card.dart';
 
 class SensorSelectionScreen extends StatefulWidget {
-  const SensorSelectionScreen({super.key});
+  const SensorSelectionScreen({Key? key});
 
   @override
   _SensorSelectionScreenState createState() => _SensorSelectionScreenState();
@@ -12,13 +12,8 @@ class SensorSelectionScreen extends StatefulWidget {
 
 class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
   final SensorSelectionService _service = SensorSelectionService();
-  final List<Sensor> _items = [
-    Sensor(uid: 'a1', name: 'Temperature', icon: Icons.thermostat),
-    Sensor(uid: 'b2', name: 'Motion', icon: Icons.directions_walk),
-    Sensor(uid: 'c3', name: 'Humidity', icon: Icons.waves),
-    Sensor(uid: 'd4', name: 'CO2', icon: Icons.cloud),
-  ];
-  final Set<Sensor> _selectedItems = {};
+  List<Sensor> _items = [];
+  final Set<String> _selectedItems = {};
 
   @override
   void initState() {
@@ -29,7 +24,19 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
   Future<void> _loadSensors() async {
     final sensors = await _service.getSensors();
     setState(() {
-      _selectedItems.addAll(sensors);
+      _items = sensors;
+    });
+  }
+
+  void _toggleSelection(String uid, bool isSelected) {
+    setState(() {
+      if (isSelected) {
+        _selectedItems.add(uid);
+        _service.deactivateSensor(uid);
+      } else {
+        _selectedItems.remove(uid);
+        _service.activateSensor(uid);
+      }
     });
   }
 
@@ -40,55 +47,13 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
     });
   }
 
-  void _toggleSelection(Sensor sensor, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        _selectedItems.add(sensor);
-      } else {
-        _selectedItems.remove(sensor);
-      }
-    });
-  }
-
-  Future<void> _navigateToNextScreen() async {
-    Navigator.pushNamed(context, '/');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null, // Remove the default app bar
+      appBar: null,
       body: Column(
         children: [
-          Container(
-            color: Colors.brown[700],
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top), // To avoid the top padding
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Go back to previous screen
-                  },
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                ),
-                const Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text(
-                        'Select your active sensors',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // AppBar and other UI components
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(2.0),
@@ -97,12 +62,12 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
                 crossAxisSpacing: 3.0,
                 mainAxisSpacing: 3.0,
                 children: _items.map((item) {
-                  final isSelected = _selectedItems.contains(item);
+                  final isSelected = _selectedItems.contains(item.uid);
                   return SensorCard(
                     sensor: item,
                     isSelected: isSelected,
                     onSelected: (isSelected) {
-                      _toggleSelection(item, isSelected);
+                      _toggleSelection(item.uid, isSelected);
                     },
                   );
                 }).toList(),
@@ -124,8 +89,8 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await _service.updateSensors(_selectedItems.toList());
-                      await _navigateToNextScreen();
+                      _service.setHasSelectedSensors(true);
+                      await Navigator.pushNamed(context, '/');
                     },
                     child: const Text('Continue'),
                   ),
