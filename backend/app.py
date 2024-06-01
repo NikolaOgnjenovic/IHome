@@ -1,6 +1,7 @@
 from flask import Flask
-from controllers.preferences_controller import preferences_controller
-from controllers.sensor_controller import sensors_controller
+
+from controllers.preferences_controller import preferences_controller_factory
+from controllers.sensor_controller import sensors_controller_factory
 from models.db.preference_db_model import db
 from repositories.preference_repository import PreferenceRepository
 from repositories.sensor_repository import SensorRepository
@@ -16,16 +17,14 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-
-with app.app_context():
     preference_repository = PreferenceRepository()
-    preference_service = PreferenceService(preference_repository)
-    app.register_blueprint(preferences_controller)
-
     sensor_repository = SensorRepository()
-    sensor_service = SensorService(sensor_repository)
-    app.register_blueprint(sensors_controller)
 
+preference_service = PreferenceService(preference_repository)
+sensor_service = SensorService(sensor_repository)
 
-if __name__ == '__main__':
+app.register_blueprint(preferences_controller_factory(preference_service))
+app.register_blueprint(sensors_controller_factory(sensor_service))
+
+if __name__=='__main__':
     app.run(debug=True)
