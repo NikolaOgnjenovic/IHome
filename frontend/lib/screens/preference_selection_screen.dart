@@ -16,17 +16,18 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
   final SensorSelectionService _sensorService = SensorSelectionService();
 
   final List<Preference> _items = [
-    Preference(name: 'Eating ice cream', icon: Icons.icecream),
-    Preference(name: 'Going to the beach', icon: Icons.beach_access),
-    Preference(name: 'Listening to music', icon: Icons.music_note),
-    Preference(name: 'Reading books', icon: Icons.book),
-    Preference(name: 'Playing video games', icon: Icons.videogame_asset),
-    Preference(name: 'Travelling', icon: Icons.airplanemode_active),
-    Preference(name: 'Watching movies', icon: Icons.movie),
-    Preference(name: 'Cycling', icon: Icons.directions_bike),
-    Preference(name: 'Cooking', icon: Icons.local_dining),
-    Preference(name: 'Hiking', icon: Icons.terrain),
+    Preference(uid: 'pref_0', name: 'Eating ice cream', icon: Icons.icecream),
+    Preference(uid: 'pref_1', name: 'Going to the beach', icon: Icons.beach_access),
+    Preference(uid: 'pref_2', name: 'Listening to music', icon: Icons.music_note),
+    Preference(uid: 'pref_3', name: 'Reading books', icon: Icons.book),
+    Preference(uid: 'pref_4', name: 'Playing video games', icon: Icons.videogame_asset),
+    Preference(uid: 'pref_5', name: 'Travelling', icon: Icons.airplanemode_active),
+    Preference(uid: 'pref_6', name: 'Watching movies', icon: Icons.movie),
+    Preference(uid: 'pref_7', name: 'Cycling', icon: Icons.directions_bike),
+    Preference(uid: 'pref_8', name: 'Cooking', icon: Icons.local_dining),
+    Preference(uid: 'pref_9', name: 'Hiking', icon: Icons.terrain),
   ];
+
   final Set<Preference> _selectedItems = {};
 
   @override

@@ -4,7 +4,7 @@ import '../services/sensor_selection_service.dart';
 import '../widgets/sensor_card.dart';
 
 class SensorSelectionScreen extends StatefulWidget {
-  const SensorSelectionScreen({Key? key}) : super(key: key);
+  const SensorSelectionScreen({super.key});
 
   @override
   _SensorSelectionScreenState createState() => _SensorSelectionScreenState();
@@ -13,10 +13,10 @@ class SensorSelectionScreen extends StatefulWidget {
 class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
   final SensorSelectionService _service = SensorSelectionService();
   final List<Sensor> _items = [
-    Sensor(id: 'a1', name: 'Temperature', icon: Icons.thermostat),
-    Sensor(id: 'b2', name: 'Motion', icon: Icons.directions_walk),
-    Sensor(id: 'c3', name: 'Humidity', icon: Icons.waves),
-    Sensor(id: 'd4', name: 'CO2', icon: Icons.cloud),
+    Sensor(uid: 'a1', name: 'Temperature', icon: Icons.thermostat),
+    Sensor(uid: 'b2', name: 'Motion', icon: Icons.directions_walk),
+    Sensor(uid: 'c3', name: 'Humidity', icon: Icons.waves),
+    Sensor(uid: 'd4', name: 'CO2', icon: Icons.cloud),
   ];
   final Set<Sensor> _selectedItems = {};
 

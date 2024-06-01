@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 class Sensor {
-  final String id;
+  final String uid;
   final String name;
   final IconData icon;
 
-  Sensor({required this.id, required this.name, required this.icon});
+  Sensor({required this.uid, required this.name, required this.icon});
 
   Map<String, dynamic> toJson() => {
-    'id': id,
+    'uid': uid,
     'name': name,
     'icon': icon.codePoint,
   };
 
   factory Sensor.fromJson(Map<String, dynamic> json) {
     return Sensor(
-      id: json['id'],
+      uid: json['uid'],
       name: json['name'],
       icon: IconData(json['icon'], fontFamily: 'MaterialIcons'),
     );
@@ -26,10 +26,10 @@ class Sensor {
       identical(this, other) ||
           other is Sensor &&
               runtimeType == other.runtimeType &&
-              id == other.id &&
+              uid == other.uid &&
               name == other.name &&
               icon == other.icon;
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode ^ icon.hashCode;
+  int get hashCode => uid.hashCode ^ name.hashCode ^ icon.hashCode;
 }
