@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:13
-    container_name: db
+    container_name: postgres-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -13,8 +13,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  web:
-    build: .
+  backend:
+    build: ./backend
+    container_name: api
     ports:
       - "5000:5000"
     depends_on:
