@@ -61,4 +61,19 @@ class PreferenceSelectionService {
       throw Exception('Failed to deactivate preference: ${response.statusCode}');
     }
   }
+
+  Future<void> updateExtraData(String uid, String extraData) async {
+    final updateUri = Uri.parse('http://127.0.0.1:5000/preferences/$uid');
+    final response = await http.patch(
+      updateUri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{'extra_data': extraData}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update extra data for preference: ${response.statusCode}');
+    }
+  }
 }

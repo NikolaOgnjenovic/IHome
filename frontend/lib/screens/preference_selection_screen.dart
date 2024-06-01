@@ -66,6 +66,10 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
     }
   }
 
+  void _updateExtraData(String uid, String extraData) {
+    _service.updateExtraData(uid, extraData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,6 +119,9 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
                     isSelected: isSelected,
                     onSelected: (isSelected) {
                       _toggleSelection(item);
+                    },
+                    onSaveExtraData: (String extraData) {
+                      _updateExtraData(item.uid, extraData);
                     },
                   );
                 }).toList(),

@@ -1,5 +1,4 @@
 from flask import current_app
-from sqlalchemy import inspect
 from models.db.sensor_db_model import SensorModel, db
 from models.sensor import Sensor, SensorType
 
