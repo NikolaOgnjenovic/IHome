@@ -1,5 +1,8 @@
 import yt_dlp
-import playsound
+from pydub import AudioSegment
+import simpleaudio as sa
+
+current_audio = None
 
 def download_audio(query):
     ydl_opts = {
@@ -17,8 +20,15 @@ def download_audio(query):
     return f'{query}.mp3'
 
 def play_audio(url):
+    global current_audio
+    if current_audio:
+        current_audio.stop()
     file_path = download_audio(url)
-    playsound.playsound(file_path, False)
+    audio = AudioSegment.from_file(file_path)
+    current_audio = sa.play_buffer(audio.raw_data, num_channels=audio.channels, bytes_per_sample=audio.sample_width, sample_rate=audio.frame_rate)
 
 def stop_audio():
-    playsound.playsound('', False)
+    global current_audio
+    if current_audio:
+        current_audio.stop()
+        current_audio = None
