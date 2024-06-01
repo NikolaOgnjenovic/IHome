@@ -54,16 +54,16 @@ class SensorRepository:
             sensors = [
                 SensorModel(uid='a1', name='Temperature', icon=0xe42b, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_working_space_temperature',
-                            type=SensorType.TEMPERATURE),
+                            type=SensorType.TEMPERATURE, room='work room'),
                 SensorModel(uid='b2', name='Atmospheric pressure', icon=0xe536, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_open_space_atmospheric_pressure',
-                            type=SensorType.ATMOSHPERIC_PRESSURE),
+                            type=SensorType.ATMOSHPERIC_PRESSURE, room='bathroom'),
                 SensorModel(uid='c3', name='Humidity', icon=0xe318, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_open_space_relative_humidity',
-                            type=SensorType.RELATIVE_HUMIDITY),
+                            type=SensorType.RELATIVE_HUMIDITY, room='work room'),
                 SensorModel(uid='d4', name='CO2', icon=0xe491, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_working_space_co2_ppm',
-                            type=SensorType.CO2_PPM)
+                            type=SensorType.CO2_PPM, room='work room')
             ]
             for sensor in sensors:
                 self.db.session.add(sensor)
