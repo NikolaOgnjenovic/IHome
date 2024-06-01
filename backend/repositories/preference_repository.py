@@ -1,33 +1,65 @@
+from models.db.preference_db_model import db, PreferenceModel
 from models.preference import Preference
+from flask import current_app
+
+
+def _to_preference(preference_model: PreferenceModel) -> Preference:
+    return Preference(
+        uid=preference_model.uid,
+        name=preference_model.name,
+        icon=preference_model.icon,
+        is_active=preference_model.is_active,
+        extra_data=preference_model.extra_data,
+        extra_data_hint=preference_model.extra_data_hint
+    )
 
 
 class PreferenceRepository:
     def __init__(self):
-        self.preferences = [
-            Preference(uid='pref_0', name='Eating ice cream', icon=0xe438, is_active=False),
-            Preference(uid='pref_1', name='Going to the beach', icon=0xe3be, is_active=False),
-            Preference(uid='pref_2', name='Listening to music', icon=0xe405, is_active=False),
-            Preference(uid='pref_3', name='Reading books', icon=0xe03e, is_active=False),
-            Preference(uid='pref_4', name='Playing video games', icon=0xe7fc, is_active=False),
-            Preference(uid='pref_5', name='Travelling', icon=0xe195, is_active=False),
-            Preference(uid='pref_6', name='Watching movies', icon=0xe40c, is_active=False),
-            Preference(uid='pref_7', name='Cycling', icon=0xe52f, is_active=False),
-            Preference(uid='pref_8', name='Cooking', icon=0xe56c, is_active=False),
-            Preference(uid='pref_9', name='Hiking', icon=0xe3c4, is_active=False)
-        ]
+        self.db = db
+        self.create_table_if_not_exists()
+
+    def create_table_if_not_exists(self):
+        with current_app.app_context():
+            preferences_count = PreferenceModel.query.count()
+            if preferences_count == 0:
+                self.db.create_all()
+                self.seed_data()
 
     def get_all_preferences(self) -> [Preference]:
-        return self.preferences
+        with current_app.app_context():
+            preferences = PreferenceModel.query.all()
+            return [_to_preference(p) for p in preferences]
 
-    def get_preference_by_id(self, uid: str) -> Preference | None:
-        for preference in self.preferences:
-            if preference.uid == uid:
-                return preference
-        return None
+    def get_preference_by_id(self, uid: str) -> Preference:
+        with current_app.app_context():
+            preference = PreferenceModel.query.filter_by(uid=uid).first()
+            if preference:
+                return _to_preference(preference)
+            return None
 
     def update_preference(self, preference: Preference) -> bool:
-        for idx, p in enumerate(self.preferences):
-            if p.uid == preference.uid:
-                self.preferences[idx] = preference
+        with current_app.app_context():
+            preference_model = PreferenceModel.query.filter_by(uid=preference.uid).first()
+            if preference_model:
+                preference_model.name = preference.name
+                preference_model.icon = preference.icon
+                preference_model.is_active = preference.is_active
+                preference_model.extra_data = preference.extra_data
+                self.db.session.commit()
                 return True
-        return False
+            return False
+
+    def seed_data(self):
+        with current_app.app_context():
+            preferences = [
+                PreferenceModel(uid='pref_2', name='Listening to music while showering', icon=0xe405, is_active=False,
+                                extra_data_hint='Enter your favorite music genre'),
+                PreferenceModel(uid='pref_3', name='Listening to music while cooking', icon=0xe405, is_active=False,
+                                extra_data_hint='Enter your favorite playlist name'),
+                PreferenceModel(uid='pref_6', name='Watching movies when you come home', icon=0xe40c, is_active=False,
+                                extra_data_hint='Enter your favorite movie title')
+            ]
+            for preference in preferences:
+                self.db.session.add(preference)
+            self.db.session.commit()

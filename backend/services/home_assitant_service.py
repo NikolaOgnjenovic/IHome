@@ -1,16 +1,16 @@
 from datetime import datetime, timedelta
 from homeassistant_api import Client
 from config import HA_ENDPOINT, HA_ACCESS_TOKEN
+from repositories.sensor_repository import SensorRepository
 from services.sensor_service import SensorService
-from models.sensor import SensorType
 
 
 MINUTES_DELTA = 5
 
 
 class HomeAssistantService:
-    def __init__(self) -> None:
-        self.sensor_service = SensorService()
+    def __init__(self, sensor_service: SensorService) -> None:
+        self.sensor_service = sensor_service
 
     def get_sensor_data(self) -> dict:
         with Client(HA_ENDPOINT, HA_ACCESS_TOKEN) as client:
@@ -31,5 +31,5 @@ class HomeAssistantService:
 
 
 if __name__ == "__main__":
-    service = HomeAssistantService()
+    service = HomeAssistantService(SensorService(SensorRepository()))
     print(service.get_sensor_data())

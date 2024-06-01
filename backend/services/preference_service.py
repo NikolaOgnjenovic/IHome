@@ -3,24 +3,32 @@ from repositories.preference_repository import PreferenceRepository
 
 
 class PreferenceService:
-    def __init__(self):
-        self.preferenceRepository = PreferenceRepository()
+    def __init__(self, preference_repository: PreferenceRepository):
+        self.preference_repository = preference_repository
 
     def get_all_preferences(self) -> [Preference]:
-        return self.preferenceRepository.get_all_preferences()
+        return self.preference_repository.get_all_preferences()
 
     def activate_by_id(self, uid: str) -> bool:
-        preference = self.preferenceRepository.get_preference_by_id(uid)
+        preference = self.preference_repository.get_preference_by_id(uid)
         if preference:
             preference.is_active = True
-            self.preferenceRepository.update_preference(preference)
+            self.preference_repository.update_preference(preference)
             return True
         return False
 
     def deactivate_by_id(self, uid: str) -> bool:
-        preference = self.preferenceRepository.get_preference_by_id(uid)
+        preference = self.preference_repository.get_preference_by_id(uid)
         if preference:
             preference.is_active = False
-            self.preferenceRepository.update_preference(preference)
+            self.preference_repository.update_preference(preference)
+            return True
+        return False
+
+    def update_preference_extra_data(self, uid: str, extra_data: str) -> bool:
+        preference = self.preference_repository.get_preference_by_id(uid)
+        if preference:
+            preference.extra_data = extra_data
+            self.preference_repository.update_preference(preference)
             return True
         return False

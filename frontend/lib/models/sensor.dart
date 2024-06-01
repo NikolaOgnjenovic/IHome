@@ -6,13 +6,16 @@ class Sensor {
   final IconData icon;
   bool isActive;
 
-  Sensor({required this.uid, required this.name, required this.icon, required this.isActive});
+  Sensor({required this.uid,
+    required this.name,
+    required this.icon,
+    required this.isActive});
 
   Map<String, dynamic> toJson() => {
     'uid': uid,
     'name': name,
     'icon': icon.codePoint,
-    'isActive': isActive
+    'is_active': isActive
   };
 
   factory Sensor.fromJson(Map<String, dynamic> json) {
