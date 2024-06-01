@@ -10,7 +10,7 @@ from services.preference_service import PreferenceService
 from services.sensor_service import SensorService
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/preferences_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/preferences_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -28,7 +28,7 @@ app.register_blueprint(sensors_controller_factory(sensor_service))
 
 @app.route('/play', methods=['GET'])
 def play():
-    video_url = request.args.get('video_url')
+    video_url = request.args.get('video_name')
     if not video_url:
         return {'error': 'Please provide a video URL'}, 400
 

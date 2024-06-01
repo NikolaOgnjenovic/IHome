@@ -1,7 +1,7 @@
 import yt_dlp
 import playsound
 
-def download_audio(url):
+def download_audio(query):
     ydl_opts = {
         'format': 'bestaudio/best',
         'postprocessors': [{
@@ -9,12 +9,12 @@ def download_audio(url):
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-        'outtmpl': '%(id)s',
+        'outtmpl': f'{query}',
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=True)
+        info_dict = ydl.extract_info(f"ytsearch:{query}", download=True)
         file_path = ydl.prepare_filename(info_dict)
-    return f'{file_path}.mp3'
+    return f'{query}.mp3'
 
 def play_audio(url):
     file_path = download_audio(url)
