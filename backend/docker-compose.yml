@@ -1,24 +1,23 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
-    restart: always
+  db:
+    image: postgres:13
     environment:
-      POSTGRES_DB: your_db_name
-      POSTGRES_USER: your_username
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: preferences_db
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-  flask-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    environment:
-      DATABASE_URL: postgresql://admin:admin@postgres:5432/smart_home
+  web:
+    build: .
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
+      - db
+
+volumes:
+  postgres_data:

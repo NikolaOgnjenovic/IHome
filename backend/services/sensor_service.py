@@ -3,8 +3,8 @@ from repositories.sensor_repository import SensorRepository
 
 
 class SensorService:
-    def __init__(self):
-        self.sensorRepository = SensorRepository()
+    def __init__(self, sensor_repository: SensorRepository):
+        self.sensor_repository = sensor_repository
 
     def get_all_sensors(self) -> [Sensor]:
         return self.sensorRepository.get_all_sensors()
