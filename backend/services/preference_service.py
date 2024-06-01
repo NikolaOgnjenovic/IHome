@@ -6,8 +6,21 @@ class PreferenceService:
     def __init__(self):
         self.preferenceRepository = PreferenceRepository()
 
-    def update_all_preferences(self, preferences: [Preference]):
-        self.preferenceRepository.update_all_preferences(preferences)
-
     def get_all_preferences(self) -> [Preference]:
         return self.preferenceRepository.get_all_preferences()
+
+    def activate_by_id(self, uid: str) -> bool:
+        preference = self.preferenceRepository.get_preference_by_id(uid)
+        if preference:
+            preference.is_active = True
+            self.preferenceRepository.update_preference(preference)
+            return True
+        return False
+
+    def deactivate_by_id(self, uid: str) -> bool:
+        preference = self.preferenceRepository.get_preference_by_id(uid)
+        if preference:
+            preference.is_active = False
+            self.preferenceRepository.update_preference(preference)
+            return True
+        return False

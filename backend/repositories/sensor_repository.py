@@ -7,7 +7,7 @@ class SensorRepository:
             Sensor(uid='a1', name='Temperature', icon=0xe42b, is_active=False),
             Sensor(uid='b2', name='Motion', icon=0xe536, is_active=False),
             Sensor(uid='c3', name='Humidity', icon=0xe318, is_active=False),
-            Sensor(uid='d4', name='CO2', icon=0xe491, is_active=False),
+            Sensor(uid='d4', name='CO2', icon=0xe491, is_active=False)
         ]
 
     def get_all_sensors(self) -> [Sensor]:

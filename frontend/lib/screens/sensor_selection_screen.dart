@@ -25,18 +25,25 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
     final sensors = await _service.getSensors();
     setState(() {
       _items = sensors;
+      for (var sensor in sensors) {
+        if (sensor.isActive) {
+          _selectedItems.add(sensor.uid);
+        }
+      }
     });
   }
 
-  void _toggleSelection(String uid, bool isSelected) {
+  void _toggleSelection(Sensor sensor) {
     setState(() {
-      if (isSelected) {
-        _selectedItems.add(uid);
-        _service.deactivateSensor(uid);
+      if (sensor.isActive) {
+        _selectedItems.remove(sensor.uid);
+        _service.deactivateSensor(sensor.uid);
       } else {
-        _selectedItems.remove(uid);
-        _service.activateSensor(uid);
+        _selectedItems.add(sensor.uid);
+        _service.activateSensor(sensor.uid);
       }
+
+      sensor.isActive = !sensor.isActive;
     });
   }
 
@@ -67,7 +74,7 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
                     sensor: item,
                     isSelected: isSelected,
                     onSelected: (isSelected) {
-                      _toggleSelection(item.uid, isSelected);
+                      _toggleSelection(item);
                     },
                   );
                 }).toList(),

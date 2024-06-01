@@ -13,7 +13,7 @@ def get_all_sensors():
     return jsonify(sensor_dicts), 200
 
 
-@sensors_controller.route('/sensors/activate', methods=['POST'])
+@sensors_controller.route('/sensors/activate', methods=['PATCH'])
 def activate_sensor_by_id():
     data = request.json
     uid = data.get('uid')
@@ -26,7 +26,7 @@ def activate_sensor_by_id():
         return jsonify({'error': 'Sensor not found'}), 404
 
 
-@sensors_controller.route('/sensors/deactivate', methods=['POST'])
+@sensors_controller.route('/sensors/deactivate', methods=['PATCH'])
 def deactivate_sensor_by_id():
     data = request.json
     uid = data.get('uid')
