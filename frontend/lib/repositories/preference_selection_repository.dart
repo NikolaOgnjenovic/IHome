@@ -12,4 +12,9 @@ class PreferenceSelectionRepository {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_hasSelectedPreferencesKey) == true;
   }
+
+  Future<void> setHasSelectedPreferences(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(_hasSelectedPreferencesKey, value);
+  }
 }

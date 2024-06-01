@@ -7,21 +7,8 @@ import 'package:http/http.dart' as http;
 class PreferenceSelectionService {
   final PreferenceSelectionRepository _repository = PreferenceSelectionRepository();
   final Uri baseUri = Uri.parse('http://127.0.0.1:5000/preferences');
-
-  Future<void> updatePreferences(List<Preference> preferences) async {
-    final preferencesJson = preferences.map((preference) => preference.toJson()).toList();
-    final response = await http.put(
-      baseUri,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{'preferences': preferencesJson}),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update preferences: ${response.statusCode}');
-    }
-  }
+  final Uri activateUri = Uri.parse('http://127.0.0.1:5000/preferences/activate');
+  final Uri deactivateUri = Uri.parse('http://127.0.0.1:5000/preferences/deactivate');
 
   Future<List<Preference>> getPreferences() async {
     final response = await http.get(baseUri);
@@ -40,5 +27,38 @@ class PreferenceSelectionService {
 
   Future<bool> hasSelectedPreferences() async {
     return await _repository.hasSelectedPreferences();
+  }
+
+  Future<void> setHasSelectedPreferences(bool value) async {
+    return await _repository.setHasSelectedPreferences(value);
+  }
+
+
+  Future<void> activatePreference(String uid) async {
+    final response = await http.patch(
+      activateUri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{'uid': uid}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to activate preference: ${response.statusCode}');
+    }
+  }
+
+  Future<void> deactivatePreference(String uid) async {
+    final response = await http.patch(
+      deactivateUri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{'uid': uid}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to deactivate preference: ${response.statusCode}');
+    }
   }
 }

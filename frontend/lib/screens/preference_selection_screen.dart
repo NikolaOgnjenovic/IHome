@@ -15,20 +15,8 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
   final PreferenceSelectionService _service = PreferenceSelectionService();
   final SensorSelectionService _sensorService = SensorSelectionService();
 
-  final List<Preference> _items = [
-    Preference(uid: 'pref_0', name: 'Eating ice cream', icon: Icons.icecream),
-    Preference(uid: 'pref_1', name: 'Going to the beach', icon: Icons.beach_access),
-    Preference(uid: 'pref_2', name: 'Listening to music', icon: Icons.music_note),
-    Preference(uid: 'pref_3', name: 'Reading books', icon: Icons.book),
-    Preference(uid: 'pref_4', name: 'Playing video games', icon: Icons.videogame_asset),
-    Preference(uid: 'pref_5', name: 'Travelling', icon: Icons.airplanemode_active),
-    Preference(uid: 'pref_6', name: 'Watching movies', icon: Icons.movie),
-    Preference(uid: 'pref_7', name: 'Cycling', icon: Icons.directions_bike),
-    Preference(uid: 'pref_8', name: 'Cooking', icon: Icons.local_dining),
-    Preference(uid: 'pref_9', name: 'Hiking', icon: Icons.terrain),
-  ];
-
-  final Set<Preference> _selectedItems = {};
+  List<Preference> _items = [];
+  final Set<String> _selectedItems = {};
 
   @override
   void initState() {
@@ -39,7 +27,12 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
   Future<void> _loadPreferences() async {
     final preferences = await _service.getPreferences();
     setState(() {
-      _selectedItems.addAll(preferences);
+      _items = preferences;
+      for (var preference in preferences) {
+        if (preference.isActive) {
+          _selectedItems.add(preference.uid);
+        }
+      }
     });
   }
 
@@ -50,13 +43,17 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
     });
   }
 
-  void _toggleSelection(Preference preference, bool isSelected) {
+  void _toggleSelection(Preference preference) {
     setState(() {
-      if (isSelected) {
-        _selectedItems.add(preference);
+      if (preference.isActive) {
+        _selectedItems.remove(preference.uid);
+        _service.deactivatePreference(preference.uid);
       } else {
-        _selectedItems.remove(preference);
+        _selectedItems.add(preference.uid);
+        _service.activatePreference(preference.uid);
       }
+
+      preference.isActive = !preference.isActive;
     });
   }
 
@@ -72,17 +69,17 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null, // Remove the default app bar
+      appBar: null,
       body: Column(
         children: [
           Container(
             color: Colors.brown[700],
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top), // To avoid the top padding
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: Row(
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context); // Go back to previous screen
+                    Navigator.pop(context);
                   },
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                 ),
@@ -91,7 +88,7 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
-                        'Select your preferred actions', // Updated title
+                        'Select your preferred actions',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20.0,
@@ -112,12 +109,12 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
                 crossAxisSpacing: 3.0,
                 mainAxisSpacing: 3.0,
                 children: _items.map((item) {
-                  final isSelected = _selectedItems.contains(item);
+                  final isSelected = _selectedItems.contains(item.uid);
                   return PreferenceCard(
                     preference: item,
                     isSelected: isSelected,
                     onSelected: (isSelected) {
-                      _toggleSelection(item, isSelected);
+                      _toggleSelection(item);
                     },
                   );
                 }).toList(),
@@ -139,7 +136,7 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await _service.updatePreferences(_selectedItems.toList());
+                      _service.setHasSelectedPreferences(true);
                       await _navigateToNextScreen();
                     },
                     child: const Text('Continue'),

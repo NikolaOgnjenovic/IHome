@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class SensorSelectionService {
   final SensorSelectionRepository _repository = SensorSelectionRepository();
   final Uri baseUri = Uri.parse('http://127.0.0.1:5000/sensors');
-  final Uri activateUri = Uri.parse('http://127.0.0.1:5000/sensors');
+  final Uri activateUri = Uri.parse('http://127.0.0.1:5000/sensors/activate');
   final Uri deactivateUri = Uri.parse('http://127.0.0.1:5000/sensors/deactivate');
 
   Future<List<Sensor>> getSensors() async {
@@ -34,7 +34,7 @@ class SensorSelectionService {
   }
 
   Future<void> activateSensor(String uid) async {
-    final response = await http.post(
+    final response = await http.patch(
       activateUri,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -48,7 +48,7 @@ class SensorSelectionService {
   }
 
   Future<void> deactivateSensor(String uid) async {
-    final response = await http.post(
+    final response = await http.patch(
       deactivateUri,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

@@ -4,7 +4,7 @@ class Sensor {
   final String uid;
   final String name;
   final IconData icon;
-  final bool isActive;
+  bool isActive;
 
   Sensor({required this.uid, required this.name, required this.icon, required this.isActive});
 
@@ -20,7 +20,7 @@ class Sensor {
         uid: json['uid'] ?? '-1',
         name: json['name'] ?? 'Sensor name',
         icon: IconData(json['icon'], fontFamily: 'MaterialIcons'),
-        isActive: json['isActive'] ?? false
+        isActive: json['is_active'] ?? false
     );
   }
 
