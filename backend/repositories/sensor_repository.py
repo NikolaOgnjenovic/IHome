@@ -10,7 +10,8 @@ def _to_sensor(sensor_model: SensorModel) -> Sensor:
         icon=sensor_model.icon,
         is_active=sensor_model.is_active,
         entity_id=sensor_model.entity_id,
-        type=sensor_model.type
+        type=sensor_model.type,
+        room=sensor_model.room
     )
 
 
