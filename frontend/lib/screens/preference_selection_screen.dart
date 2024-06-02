@@ -1,33 +1,21 @@
 import 'package:flutter/material.dart';
 import '../models/preference.dart';
 import '../services/preference_selection_service.dart';
-import '../services/sensor_selection_service.dart';
-import '../widgets/preference_card.dart';
+import '../widgets/background_container.dart';
+import '../widgets/preference_list_item.dart';
 
 class PreferenceSelectionScreen extends StatefulWidget {
-  const PreferenceSelectionScreen({super.key});
+  const PreferenceSelectionScreen({Key? key}) : super(key: key);
 
   @override
-  _PreferenceSelectionScreenState createState() => _PreferenceSelectionScreenState();
+  _PreferenceSelectionScreenState createState() =>
+      _PreferenceSelectionScreenState();
 }
 
 class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
   final PreferenceSelectionService _service = PreferenceSelectionService();
-  final SensorSelectionService _sensorService = SensorSelectionService();
-
-  final List<Preference> _items = [
-    Preference(name: 'Eating ice cream', icon: Icons.icecream),
-    Preference(name: 'Going to the beach', icon: Icons.beach_access),
-    Preference(name: 'Listening to music', icon: Icons.music_note),
-    Preference(name: 'Reading books', icon: Icons.book),
-    Preference(name: 'Playing video games', icon: Icons.videogame_asset),
-    Preference(name: 'Travelling', icon: Icons.airplanemode_active),
-    Preference(name: 'Watching movies', icon: Icons.movie),
-    Preference(name: 'Cycling', icon: Icons.directions_bike),
-    Preference(name: 'Cooking', icon: Icons.local_dining),
-    Preference(name: 'Hiking', icon: Icons.terrain),
-  ];
-  final Set<Preference> _selectedItems = {};
+  List<Preference> _items = [];
+  final Set<String> _selectedItems = {};
 
   @override
   void initState() {
@@ -37,117 +25,127 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
 
   Future<void> _loadPreferences() async {
     final preferences = await _service.getPreferences();
-    setState(() {
-      _selectedItems.addAll(preferences);
-    });
-  }
 
-  Future<void> _clearSharedPrefs() async {
-    await _service.clearSharedPrefs();
-    setState(() {
-      _selectedItems.clear();
-    });
-  }
+    preferences.sort((a, b) => a.name.compareTo(b.name));
 
-  void _toggleSelection(Preference preference, bool isSelected) {
     setState(() {
-      if (isSelected) {
-        _selectedItems.add(preference);
-      } else {
-        _selectedItems.remove(preference);
+      _items = preferences;
+      for (var preference in preferences) {
+        if (preference.isActive) {
+          _selectedItems.add(preference.uid);
+        }
       }
     });
   }
 
-  Future<void> _navigateToNextScreen() async {
-    final hasSelectedSensors = await _sensorService.hasSelectedSensors();
-    if (!hasSelectedSensors) {
-      Navigator.pushNamed(context, '/sensor-selection');
-    } else {
-      Navigator.pushNamed(context, '/');
-    }
+  void _toggleSelection(Preference preference) {
+    setState(() {
+      if (preference.isActive) {
+        _selectedItems.remove(preference.uid);
+        _service.deactivatePreference(preference.uid);
+      } else {
+        _selectedItems.add(preference.uid);
+        _service.activatePreference(preference.uid);
+      }
+
+      preference.isActive = !preference.isActive;
+    });
+  }
+
+  void _updateExtraData(String uid, String extraData) {
+    _service.updateExtraData(uid, extraData);
+  }
+
+  void _openExtraDataModal(Preference preference) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController controller =
+        TextEditingController(text: preference.extraData ?? '');
+        return AlertDialog(
+          title: Padding(
+            padding: const EdgeInsets.only(left: 20), // Left padding
+            child: const Text("Additional data"),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20), // Horizontal padding
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: preference.extraDataHint,
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF373A40)),
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.close),
+            ),
+            IconButton(
+              onPressed: () {
+                _updateExtraData(preference.uid, controller.text);
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.check),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null, // Remove the default app bar
-      body: Column(
-        children: [
-          Container(
-            color: Colors.brown[700],
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top), // To avoid the top padding
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Go back to previous screen
+      body: BackgroundContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, top: 50),
+              child: Text(
+                'Preferences',
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 13, top: 10),
+              child: IconButton(
+                icon: const Icon(Icons.home),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/');
+                },
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: ListView.builder(
+                  itemCount: _items.length,
+                  itemBuilder: (context, index) {
+                    final item = _items[index];
+                    final isSelected = _selectedItems.contains(item.uid);
+                    return PreferenceListItem(
+                      preference: item,
+                      isSelected: isSelected,
+                      onSelected: (isSelected) {
+                        _toggleSelection(item);
+                      },
+                      onOpenExtraData: () {
+                        _openExtraDataModal(item);
+                      },
+                    );
                   },
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                 ),
-                const Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text(
-                        'Select your preferred actions', // Updated title
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 3.0,
-                mainAxisSpacing: 3.0,
-                children: _items.map((item) {
-                  final isSelected = _selectedItems.contains(item);
-                  return PreferenceCard(
-                    preference: item,
-                    isSelected: isSelected,
-                    onSelected: (isSelected) {
-                      _toggleSelection(item, isSelected);
-                    },
-                  );
-                }).toList(),
               ),
             ),
-          ),
-          Container(
-            color: Colors.grey[200],
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _clearSharedPrefs();
-                    },
-                    child: const Text('Clear Preferences'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _service.updatePreferences(_selectedItems.toList());
-                      await _navigateToNextScreen();
-                    },
-                    child: const Text('Continue'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

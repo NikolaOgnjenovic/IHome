@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/sensor.dart';
 import '../services/sensor_selection_service.dart';
-import '../widgets/sensor_card.dart';
+import '../widgets/background_container.dart';
+import '../widgets/sensor_list_item.dart';
 
 class SensorSelectionScreen extends StatefulWidget {
-  const SensorSelectionScreen({Key? key}) : super(key: key);
+  const SensorSelectionScreen({Key? key});
 
   @override
   _SensorSelectionScreenState createState() => _SensorSelectionScreenState();
@@ -12,13 +13,8 @@ class SensorSelectionScreen extends StatefulWidget {
 
 class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
   final SensorSelectionService _service = SensorSelectionService();
-  final List<Sensor> _items = [
-    Sensor(id: 'a1', name: 'Temperature', icon: Icons.thermostat),
-    Sensor(id: 'b2', name: 'Motion', icon: Icons.directions_walk),
-    Sensor(id: 'c3', name: 'Humidity', icon: Icons.waves),
-    Sensor(id: 'd4', name: 'CO2', icon: Icons.cloud),
-  ];
-  final Set<Sensor> _selectedItems = {};
+  List<Sensor> _items = [];
+  final Set<String> _selectedItems = {};
 
   @override
   void initState() {
@@ -29,112 +25,82 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
   Future<void> _loadSensors() async {
     final sensors = await _service.getSensors();
     setState(() {
-      _selectedItems.addAll(sensors);
-    });
-  }
-
-  Future<void> _clearSharedPrefs() async {
-    await _service.clearSharedPrefs();
-    setState(() {
-      _selectedItems.clear();
-    });
-  }
-
-  void _toggleSelection(Sensor sensor, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        _selectedItems.add(sensor);
-      } else {
-        _selectedItems.remove(sensor);
+      _items = sensors;
+      for (var sensor in sensors) {
+        if (sensor.isActive) {
+          _selectedItems.add(sensor.uid);
+        }
       }
     });
   }
 
-  Future<void> _navigateToNextScreen() async {
-    Navigator.pushNamed(context, '/');
+  void _toggleSelection(Sensor sensor) {
+    setState(() {
+      if (sensor.isActive) {
+        _selectedItems.remove(sensor.uid);
+        _service.deactivateSensor(sensor.uid);
+      } else {
+        _selectedItems.add(sensor.uid);
+        _service.activateSensor(sensor.uid);
+      }
+
+      sensor.isActive = !sensor.isActive;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null, // Remove the default app bar
-      body: Column(
+        body: BackgroundContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: Colors.brown[700],
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top), // To avoid the top padding
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Go back to previous screen
-                  },
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                ),
-                const Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text(
-                        'Select your active sensors',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 50),
+            child: Text(
+              'Active sensors',
+              style: Theme.of(context).textTheme.displayLarge,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 13, top: 10),
+            child: IconButton(
+              icon: const Icon(Icons.home),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
             ),
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 3.0,
-                mainAxisSpacing: 3.0,
-                children: _items.map((item) {
-                  final isSelected = _selectedItems.contains(item);
-                  return SensorCard(
+              padding: const EdgeInsets.only(left: 20),
+              child: ListView.builder(
+                itemCount: _items.length,
+                itemBuilder: (context, index) {
+                  final item = _items[index];
+                  final isSelected = _selectedItems.contains(item.uid);
+                  return SensorListItem(
                     sensor: item,
                     isSelected: isSelected,
                     onSelected: (isSelected) {
-                      _toggleSelection(item, isSelected);
+                      _toggleSelection(item);
                     },
                   );
-                }).toList(),
+                },
               ),
             ),
           ),
-          Container(
-            color: Colors.grey[200],
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _clearSharedPrefs();
-                    },
-                    child: const Text('Clear Sensors'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _service.updateSensors(_selectedItems.toList());
-                      await _navigateToNextScreen();
-                    },
-                    child: const Text('Continue'),
-                  ),
-                ],
-              ),
+          Padding(
+            padding: const EdgeInsets.only(left: 13, top: 10),
+            child: IconButton(
+              icon: const Icon(Icons.music_note),
+              onPressed: () {
+                _service.playVideo("Shine On You Crazy Diamond");
+              },
             ),
           ),
         ],
       ),
-    );
+    ));
   }
 }
