@@ -109,7 +109,7 @@ class _PreferenceSelectionScreenState extends State<PreferenceSelectionScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 20, top: 50),
               child: Text(
-                'Actions',
+                'Preferences',
                 style: Theme.of(context).textTheme.displayLarge,
               ),
             ),

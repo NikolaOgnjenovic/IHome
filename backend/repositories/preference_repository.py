@@ -53,12 +53,12 @@ class PreferenceRepository:
     def seed_data(self):
         with current_app.app_context():
             preferences = [
-                PreferenceModel(uid='pref_2', name='Listening to music while showering', icon=0xe405, is_active=False,
-                                extra_data_hint='Enter your favorite music genre'),
-                PreferenceModel(uid='pref_3', name='Listening to music while cooking', icon=0xe405, is_active=False,
-                                extra_data_hint='Enter your favorite playlist name'),
-                PreferenceModel(uid='pref_6', name='Watching movies when you come home', icon=0xe40c, is_active=False,
-                                extra_data_hint='Enter your favorite movie title')
+                PreferenceModel(uid='pref_2', name='Showering with music', icon=0xe5a0, is_active=False,
+                                extra_data_hint='Your favorite music genre'),
+                PreferenceModel(uid='pref_3', name='Cooking with music', icon=0xe35e, is_active=False,
+                                extra_data_hint='Your favorite playlist name'),
+                PreferenceModel(uid='pref_6', name='Playing shows when you come home', icon=0xe687, is_active=False,
+                                extra_data_hint='The title of your favorite show')
             ]
             for preference in preferences:
                 self.db.session.add(preference)

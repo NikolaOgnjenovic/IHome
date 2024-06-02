@@ -1,3 +1,4 @@
+from flasgger import Swagger
 from utils.audio_utils import play_audio, stop_audio
 from flask import Flask, request, Response
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -16,8 +17,10 @@ from services.llama_service import LlamaApiService
 from services.environment_service import EnvironmentService
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/preferences_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:user@localhost/dev_smart_home_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+swagger = Swagger(app)
 
 db.init_app(app)
 
@@ -45,6 +48,7 @@ scheduler.start()
 app.register_blueprint(preferences_controller_factory(preference_service))
 app.register_blueprint(sensors_controller_factory(sensor_service))
 
+
 @app.route('/play', methods=['GET'])
 def play():
     video_url = request.args.get('video_name')
@@ -54,10 +58,12 @@ def play():
     play_audio(video_url)
     return Response(status=200)
 
+
 @app.route('/stop', methods=['GET'])
 def stop():
     stop_audio()
     return Response(status=200)
+
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

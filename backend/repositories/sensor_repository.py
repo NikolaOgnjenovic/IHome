@@ -12,7 +12,7 @@ def _to_sensor(sensor_model: SensorModel) -> Sensor:
         is_active=sensor_model.is_active,
         entity_id=sensor_model.entity_id,
         type=sensor_model.type,
-        room=sensor_model.room,
+        room=sensor_model.room
     )
 
 
@@ -54,16 +54,16 @@ class SensorRepository:
     def seed_data(self):
         with current_app.app_context():
             sensors = [
-                SensorModel(uid='a1', name='Temperature', icon=0xe42b, is_active=False,
+                SensorModel(uid='a1', name='Temperature', icon=0xe6e3, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_working_space_temperature',
                             type=SensorType.TEMPERATURE, room='work room'),
-                SensorModel(uid='b2', name='Atmospheric pressure', icon=0xe536, is_active=False,
+                SensorModel(uid='b2', name='Atmospheric pressure', icon=0xe064, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_open_space_atmospheric_pressure',
                             type=SensorType.ATMOSHPERIC_PRESSURE, room='bathroom'),
-                SensorModel(uid='c3', name='Humidity', icon=0xe318, is_active=False,
+                SensorModel(uid='c3', name='Humidity', icon=0xe6d0, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_open_space_relative_humidity',
                             type=SensorType.RELATIVE_HUMIDITY, room='work room'),
-                SensorModel(uid='d4', name='CO2', icon=0xe491, is_active=False,
+                SensorModel(uid='d4', name='CO2', icon=0xf04d0, is_active=False,
                             entity_id='sensor.psoc6_micropython_sensornode_working_space_co2_ppm',
                             type=SensorType.CO2_PPM, room='work room')
             ]
