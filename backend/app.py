@@ -39,7 +39,7 @@ def tmp_func():
         environment_service.run_single()
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(tmp_func, 'interval', seconds=10)
+scheduler.add_job(tmp_func, 'interval', seconds=20)
 scheduler.start()
 
 app.register_blueprint(preferences_controller_factory(preference_service))

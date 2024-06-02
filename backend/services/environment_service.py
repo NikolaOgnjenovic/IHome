@@ -1,6 +1,7 @@
 from services.home_assitant_service import HomeAssistantService
 from services.prompt_service import PromptService
 from services.llama_service import LlamaApiService
+from utils.audio_utils import speak
 
 
 class EnvironmentService:
@@ -25,8 +26,10 @@ class EnvironmentService:
         res = self.llama_service.send(prompt)['choices'][0]['message']['content']
 
         prompt = self.prompt_service.get_task_prompt_descriptive(res)
-        # print(prompt)
-        res = self.llama_service.send(prompt)#['choices'][0]['message']['content']
+        print(prompt)
+        res = self.llama_service.send(prompt)['choices'][0]['message']['content']
+
+        speak(res)
 
         # prompt = self.prompt_service.get_task_id_prompt(res)
         # res = self.llama_service.send(prompt)

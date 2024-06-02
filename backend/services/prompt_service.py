@@ -54,25 +54,26 @@ class PromptService:
             {'role': 'system', 'content': 'Please respond ONLY with the ID of the appropriate command.'},
             {'role': 'user', 'content': sensor_context},
             # {'role': 'system', 'content': 'Please respond ONLY with the ID of the appropriate command.'}
+            {'role': 'system', 'content': 'Keep the reply short.'}
         ]
 
         return {
             'model': 'llama-13b-chat',
-            'functions': [{
-                'name': 'run_task',
-                'description': 'Run the task that suits the situation the most. action_id and action_description must match one of the provided.',
-                'parameters': {
-                    'type': 'object',
-                    'properties': {
-                        'action_id': {
-                            'type': 'string',
-                            'description': 'The number of the action to be run based on preferences, action list and current context. NO VENTILATION! Actions are ' + actions_list
-                        }
-                    },
-                    'required': ['action_id']
-                }
-            }],
-            'function_call': {'name': 'run_task'},
+            # 'functions': [{
+            #     'name': 'run_task',
+            #     'description': 'Run the task that suits the situation the most. action_id and action_description must match one of the provided.',
+            #     'parameters': {
+            #         'type': 'object',
+            #         'properties': {
+            #             'action_id': {
+            #                 'type': 'string',
+            #                 'description': 'The ID of the action to be run.'
+            #             }
+            #         },
+            #         'required': ['action_id']
+            #     }
+            # }],
+            # 'function_call': {'name': 'run_task'},
             'messages': messages
         }
 

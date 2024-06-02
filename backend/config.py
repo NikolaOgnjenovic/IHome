@@ -9,3 +9,5 @@ PORT=8123
 HA_ENDPOINT= f'http://{HA_IP_ADDRESS}:{8123}/api'
 
 LLAMA_API_KEY = os.environ.get('LLAMA_API_KEY', 'dev_key')
+
+SPEECH_AUDIO_FILE = 'speech.mp3'
