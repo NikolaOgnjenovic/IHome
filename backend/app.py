@@ -9,16 +9,20 @@ from repositories.preference_repository import PreferenceRepository
 from repositories.sensor_repository import SensorRepository
 from services.preference_service import PreferenceService
 from services.sensor_service import SensorService
+# from services.home_assitant_service import HomeAssistantService
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/preferences_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/preferences_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# service = HomeAssistantService(SensorService(SensorRepository()))
+
 def tmp_func():
-    print('Hello from scheduler')
+    # print(service.get_sensor_data())
+    print('a')
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(tmp_func, 'interval', seconds=10)
+scheduler.add_job(tmp_func, 'interval', seconds=15)
 scheduler.start()
 
 db.init_app(app)

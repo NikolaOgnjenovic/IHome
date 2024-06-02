@@ -3,6 +3,7 @@ from homeassistant_api import Client
 from config import HA_ENDPOINT, HA_ACCESS_TOKEN
 from repositories.sensor_repository import SensorRepository
 from services.sensor_service import SensorService
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 MINUTES_DELTA = 5
@@ -30,6 +31,14 @@ class HomeAssistantService:
             return data
 
 
-if __name__ == "__main__":
-    service = HomeAssistantService(SensorService(SensorRepository()))
+# if __name__ == "__main__":
+service = HomeAssistantService(SensorService(SensorRepository()))
+
+def tmp_func():
     print(service.get_sensor_data())
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(tmp_func, 'interval', seconds=15)
+scheduler.start()
+
+# print(service.get_sensor_data())

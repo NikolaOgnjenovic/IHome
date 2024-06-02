@@ -1,4 +1,5 @@
 from flask import current_app
+# from app import app as current_app
 from models.db.sensor_db_model import SensorModel, db
 from models.sensor import Sensor, SensorType
 
