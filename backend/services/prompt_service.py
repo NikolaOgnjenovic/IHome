@@ -47,11 +47,13 @@ class PromptService:
         preferences_list = "\n".join([preference.name for preference in self.preference_repository.get_all_preferences()])
 
         messages = [
-            {'role': 'system', 'content': 'You are a helpful assistant that chooses which automated home action should be taken based on data parsed from the sensors.'},
-            {'role': 'system', 'content': 'The function parameters must EXACTLY match those of the available actions (commands). The available actions are: ' + actions_list},
-            # {'role': 'system', 'content': 'User preferences are: ' + preferences_list},
+            {'role': 'system', 'content': 'You are a helpful assistant that chooses which automated home action should be taken based on data parsed from the sensors. You do not like ventilation'},
+            # {'role': 'system', 'content': 'The function parameters must EXACTLY match those of the available actions (commands). The available actions are: ' + actions_list},
+            {'role': 'system', 'content': 'User preferences are: ' + preferences_list},
+            {'role': 'system', 'content': "I'll send you the list of available actions, choose the number of the one that fits the situation the most."},
+            {'role': 'system', 'content': 'Please respond ONLY with the ID of the appropriate command.'},
             {'role': 'user', 'content': sensor_context},
-            {'role': 'system', 'content': 'Please respond ONLY with the ID of the appropriate command.'}
+            # {'role': 'system', 'content': 'Please respond ONLY with the ID of the appropriate command.'}
         ]
 
         return {
@@ -64,7 +66,7 @@ class PromptService:
                     'properties': {
                         'action_id': {
                             'type': 'string',
-                            'description': 'The ID of the action to be run.'
+                            'description': 'The number of the action to be run based on preferences, action list and current context. NO VENTILATION! Actions are ' + actions_list
                         }
                     },
                     'required': ['action_id']
@@ -78,7 +80,8 @@ class PromptService:
     def get_task_id_prompt(self, response) -> str:
         messages = [
             {'role': 'system', 'content': 'User will provide you with descriptive action. You should return a single string which is an id of the action that should be taken.'},
-            {'role': 'system', 'content': 'The id must EXACTLY match those of the available actions (commands). The available actions are: '}
+            # {'role': 'system', 'content': 'The id must EXACTLY match those of the available actions (commands). The available actions are: '}
+            {'role': 'system', 'content': "I'll send you the list of available actions, choose the number of the one that fits the situation the most."}
         ]
         for action in self.action_repostiory.get_all_actions():
             messages.append({'role': 'system', 'content': str(action)})

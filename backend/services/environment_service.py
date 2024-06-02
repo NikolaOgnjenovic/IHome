@@ -21,14 +21,15 @@ class EnvironmentService:
         # }
 
         prompt = self.prompt_service.get_data_parsing_prompt(data)
+        print(prompt)
         res = self.llama_service.send(prompt)['choices'][0]['message']['content']
 
         prompt = self.prompt_service.get_task_prompt_descriptive(res)
-        print(prompt)
+        # print(prompt)
         res = self.llama_service.send(prompt)#['choices'][0]['message']['content']
 
         # prompt = self.prompt_service.get_task_id_prompt(res)
         # res = self.llama_service.send(prompt)
 
-        print(res)
+        # print(res)
 

@@ -43,13 +43,13 @@ class ActionRepository:
     def seed_data(self):
         with current_app.app_context():
             actions = [
-                ActionModel(id='do_nothing', description='Do nothing'),
-                ActionModel(id='say', description='Say suggestion out loud'),
-                ActionModel(id='music', description='Turn the music on'),
-                ActionModel(id='tv', description='Turn the TV on'),
-                ActionModel(id='window', description='Open the window'),
-                ActionModel(id='ac', description='Turn on AC'),
-                ActionModel(id='vent', description='Turn on ventilation')
+                ActionModel(id='1', description='Do nothing'),
+                ActionModel(id='2', description='Say suggestion out loud'),
+                ActionModel(id='3', description='Turn the music on'),
+                ActionModel(id='4', description='Turn the TV on'),
+                ActionModel(id='5', description='Open the window'),
+                ActionModel(id='6', description='Turn on AC'),
+                ActionModel(id='7', description='Turn on ventilation')
             ]
             for action in actions:
                 self.db.session.add(action)
