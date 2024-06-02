@@ -41,8 +41,8 @@ def convert_to_speech(message: str):
 
 def speak(message: str):
     global current_audio
-    convert_to_speech(message)
     if current_audio:
-        current_audio.stop()
+        return
+    convert_to_speech(message)
     audio = AudioSegment.from_file(SPEECH_AUDIO_FILE)
     current_audio = sa.play_buffer(audio.raw_data, num_channels=audio.channels, bytes_per_sample=audio.sample_width, sample_rate=audio.frame_rate)
