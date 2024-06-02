@@ -46,4 +46,9 @@ class SensorSelectionService {
       throw Exception('Failed to deactivate sensor: ${response.statusCode}');
     }
   }
+
+  Future<void> playVideo(String videoName) async {
+    final url = Uri.http('127.0.0.1:5000', '/play', {'video_name': videoName});
+    await http.get(url);
+  }
 }

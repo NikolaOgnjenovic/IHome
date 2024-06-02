@@ -18,10 +18,14 @@ git clone https://github.com/NikolaOgnjenovic/EESTech.git
 ```
 
 #### Backend setup
+```bash
+mv example.env .env
+```
+
 Navigate to the backend directory and run docker-compose.yml.
 ```bash
 cd backend
-docker-compose up --build
+docker-compose up -d
 ```
 
 #### Frontend setup
@@ -82,3 +86,9 @@ The second button on the homepage takes yo uto the *Sensors* screen, on which yo
 enhance the experience of the user in the home system.
 
 <img src="assets/images/readme/sensorsScreen.png" alt="Sensors screen" height="500">
+
+#### Troubleshooting
+If you encounter problems with speech-to-text mp3 files when the AI talks, execute the following command:
+```bash
+sudo chown $USER:$USER speech.mp3
+```

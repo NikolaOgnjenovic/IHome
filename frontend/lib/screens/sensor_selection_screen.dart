@@ -90,6 +90,15 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(left: 13, top: 10),
+            child: IconButton(
+              icon: const Icon(Icons.music_note),
+              onPressed: () {
+                _service.playVideo("Shine On You Crazy Diamond");
+              },
+            ),
+          ),
         ],
       ),
     ));
