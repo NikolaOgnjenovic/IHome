@@ -27,7 +27,7 @@ git clone https://github.com/NikolaOgnjenovic/EESTech.git
 Navigate to the backend directory and run docker-compose.yml.
 ```bash
 cd backend
-docker-compose up --d --build
+docker-compose up --build
 ```
 
 #### Flutter setup
@@ -39,3 +39,8 @@ To run MyAppName on a connected device or emulator, use the following command:
 ```bash
 flutter run
 ```
+
+#### API Docs
+When the application starts, you can access the [Swagger documentation](http://localhost:5000/apidocs/).
+
+####
