@@ -7,9 +7,13 @@ from controllers.sensor_controller import sensors_controller_factory
 from models.db.preference_db_model import db
 from repositories.preference_repository import PreferenceRepository
 from repositories.sensor_repository import SensorRepository
+from repositories.action_repository import ActionRepository
 from services.preference_service import PreferenceService
 from services.sensor_service import SensorService
 from services.home_assitant_service import HomeAssistantService
+from services.prompt_service import PromptService
+from services.llama_service import LlamaApiService
+from services.environment_service import EnvironmentService
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/preferences_db'
@@ -21,18 +25,21 @@ with app.app_context():
     db.create_all()
     preference_repository = PreferenceRepository()
     sensor_repository = SensorRepository()
+    action_repository = ActionRepository()
 
 preference_service = PreferenceService(preference_repository)
 sensor_service = SensorService(sensor_repository)
 home_assistant_service = HomeAssistantService(sensor_service)
+prompt_service = PromptService(action_repository, preference_repository)
+llama_service = LlamaApiService()
+environment_service = EnvironmentService(home_assistant_service, prompt_service, llama_service)
 
 def tmp_func():
-    print('a')
     with app.app_context():
-        print(home_assistant_service.get_sensor_data())
+        environment_service.run_single()
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(tmp_func, 'interval', seconds=15)
+scheduler.add_job(tmp_func, 'interval', seconds=10)
 scheduler.start()
 
 app.register_blueprint(preferences_controller_factory(preference_service))

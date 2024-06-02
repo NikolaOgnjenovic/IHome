@@ -26,7 +26,7 @@ class PreferenceRepository:
                 self.db.create_all()
                 self.seed_data()
 
-    def get_all_preferences(self) -> [Preference]:
+    def get_all_preferences(self) -> list[Preference]:
         with current_app.app_context():
             preferences = PreferenceModel.query.all()
             return [_to_preference(p) for p in preferences]

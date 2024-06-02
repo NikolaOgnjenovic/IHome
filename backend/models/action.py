@@ -10,4 +10,4 @@ class Action:
         }
     
     def __str__(self) -> str:
-        return f'Action {self.id} - Description: {self.action}'
+        return f'Action id: {self.id} - Description: {self.description}'
