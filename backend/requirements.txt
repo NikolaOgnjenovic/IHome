@@ -18,6 +18,7 @@ Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
 frozenlist==1.4.1
 greenlet==3.0.3
+gTTS==2.5.1
 HomeAssistant-API==4.2.2.post1
 idna==3.7
 itsdangerous==2.2.0

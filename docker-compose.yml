@@ -34,12 +34,10 @@ services:
       - "5000:5000"
     volumes:
       - ./backend:/app
-      # - /dev/snd:/dev/snd
     privileged: true
-    # network_mode: host
-    extra_hosts:
-      # - "host.docker.internal:host-gateway"
-      - "${HA_IP_ADDRESS}:host-gateway"
+    network_mode: host
+    # extra_hosts:
+    #   - "${HA_IP_ADDRESS}:host-gateway"
     # devices:
     #   - /dev/snd:/dev/snd
     depends_on:
