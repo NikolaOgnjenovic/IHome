@@ -31,14 +31,14 @@ class HomeAssistantService:
             return data
 
 
-# if __name__ == "__main__":
-service = HomeAssistantService(SensorService(SensorRepository()))
+if __name__ == "__main__":
+    service = HomeAssistantService(SensorService(SensorRepository()))
 
-def tmp_func():
-    print(service.get_sensor_data())
+    def tmp_func():
+        print(service.get_sensor_data())
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(tmp_func, 'interval', seconds=15)
-scheduler.start()
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(tmp_func, 'interval', seconds=15)
+    scheduler.start()
 
 # print(service.get_sensor_data())
