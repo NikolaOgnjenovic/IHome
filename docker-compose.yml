@@ -30,6 +30,12 @@ services:
     container_name: api
     ports:
       - "5000:5000"
+    volumes:
+      - ./backend:/app
+      # - /dev/snd:/dev/snd
+    # privileged: true
+    # devices:
+    #   - /dev/snd:/dev/snd
     depends_on:
       db:
         condition: service_healthy
