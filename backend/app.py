@@ -1,5 +1,7 @@
 from flasgger import Swagger
 from utils.audio_utils import play_audio, stop_audio
+from dotenv import load_dotenv
+import os
 from flask import Flask, request, Response
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -16,8 +18,10 @@ from services.prompt_service import PromptService
 from services.llama_service import LlamaApiService
 from services.environment_service import EnvironmentService
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:user@localhost/dev_smart_home_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{os.environ["POSTGRES_USER"]}:{os.environ["POSTGRES_PASSWORD"]}@localhost/{os.environ["POSTGRES_DB"]}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 swagger = Swagger(app)
