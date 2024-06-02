@@ -3,6 +3,10 @@ from repositories.action_repository import ActionRepository
 from repositories.preference_repository import PreferenceRepository
 
 
+def last_k_elements(lst: list, k: int) -> list:
+    return lst[-k:] if k < len(lst) else lst
+
+
 class PromptService:
     def __init__(self, action_repostiory: ActionRepository, preference_repository: PreferenceRepository) -> None:
         self.action_repostiory = action_repostiory
@@ -14,27 +18,27 @@ class PromptService:
             if data[key]['sensor'].type.value == SensorType.ATMOSHPERIC_PRESSURE.value:
                 messages.append({
                     "role": "user",
-                    "content": f"Athmospheric pressure values in room {str(data[key]['sensor'].room)}: {str(data[key]['values'])}"
+                    "content": f"Athmospheric pressure values in room {str(data[key]['sensor'].room)}: {last_k_elements(str(data[key]['values'], 20))}"
                 })
             elif data[key]['sensor'].type.value == SensorType.RELATIVE_HUMIDITY.value:
                 messages.append({
                     "role": "user",
-                    "content": f"Relative humidity values in room {str(data[key]['sensor'].room)}: {str(data[key]['values'])}."
+                    "content": f"Relative humidity values in room {str(data[key]['sensor'].room)}: {last_k_elements(str(data[key]['values'], 20))}."
                 })
             elif data[key]['sensor'].type.value == SensorType.TEMPERATURE.value:
                 messages.append({
                     "role": "user",
-                    "content": f"Temperature values in room {str(data[key]['sensor'].room)}: {str(data[key]['values'])}"
+                    "content": f"Temperature values in room {str(data[key]['sensor'].room)}: {last_k_elements(str(data[key]['values'], 20))}"
                 })
             elif data[key]['sensor'].type.value == SensorType.CO2_PPM.value:
                 messages.append({
                     "role": "user",
-                    "content": f"C02 PPM level values in room {str(data[key]['sensor'].room)}: {str(data[key]['values'])}"
+                    "content": f"C02 PPM level values in room {str(data[key]['sensor'].room)}: {last_k_elements(str(data[key]['values'], 20))}"
                 })
             elif data[key]['sensor'].type.value == SensorType.LIGHT.value:
                 messages.append({
                     "role": "user",
-                    "content": f"Light intensity values in room {str(data[key]['sensor'].room)}: {str(data[key]['values'])}"
+                    "content": f"Light intensity values in room {str(data[key]['sensor'].room)}: {last_k_elements(str(data[key]['values'], 20))}"
                 })
         return {
             "model": "llama-13b-chat",
