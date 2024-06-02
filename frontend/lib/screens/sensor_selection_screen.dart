@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/sensor.dart';
 import '../services/sensor_selection_service.dart';
-import '../widgets/sensor_card.dart';
+import '../widgets/background_container.dart';
+import '../widgets/sensor_list_item.dart';
 
 class SensorSelectionScreen extends StatefulWidget {
   const SensorSelectionScreen({Key? key});
@@ -47,66 +48,50 @@ class _SensorSelectionScreenState extends State<SensorSelectionScreen> {
     });
   }
 
-  Future<void> _clearSharedPrefs() async {
-    await _service.clearSharedPrefs();
-    setState(() {
-      _selectedItems.clear();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
-      body: Column(
+        body: BackgroundContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // AppBar and other UI components
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 50),
+            child: Text(
+              'Active sensors',
+              style: Theme.of(context).textTheme.displayLarge,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 13, top: 10),
+            child: IconButton(
+              icon: const Icon(Icons.home),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
+            ),
+          ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 3.0,
-                mainAxisSpacing: 3.0,
-                children: _items.map((item) {
+              padding: const EdgeInsets.only(left: 20),
+              child: ListView.builder(
+                itemCount: _items.length,
+                itemBuilder: (context, index) {
+                  final item = _items[index];
                   final isSelected = _selectedItems.contains(item.uid);
-                  return SensorCard(
+                  return SensorListItem(
                     sensor: item,
                     isSelected: isSelected,
                     onSelected: (isSelected) {
                       _toggleSelection(item);
                     },
                   );
-                }).toList(),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.grey[200],
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _clearSharedPrefs();
-                    },
-                    child: const Text('Clear Sensors'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      _service.setHasSelectedSensors(true);
-                      await Navigator.pushNamed(context, '/');
-                    },
-                    child: const Text('Continue'),
-                  ),
-                ],
+                },
               ),
             ),
           ),
         ],
       ),
-    );
+    ));
   }
 }

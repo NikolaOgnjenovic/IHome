@@ -23,7 +23,7 @@ class HomeAssistantService:
                 for entry in history:
                     values = [float(x.state) for x in entry.states]
                 data[sensor.uid] = {
-                    'type': sensor.type.value,
+                    'sensor': sensor,
                     'values': values
                 }
 
