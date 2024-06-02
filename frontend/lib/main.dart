@@ -59,14 +59,14 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(left: 20, top: 50),
               child: Text(
-                'Smart home',
+                'IHome',
                 style: Theme.of(context).textTheme.displayLarge,
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20, top: 10),
               child: Text(
-                'Your home, smarter than ever',
+                'Personalize your intelligent home',
                 style: Theme.of(context).textTheme.displaySmall,
               ),
             ),
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pushNamed(context, '/preference-selection');
                       },
                       icon: Icons.settings,
-                      label: 'Actions',
+                      label: 'Preferences',
                     ),
                   ),
                   Padding(
