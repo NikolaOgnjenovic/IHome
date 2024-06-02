@@ -43,4 +43,30 @@ flutter run
 #### API Docs
 When the application starts, you can access the [Swagger documentation](http://localhost:5000/apidocs/).
 
-####
+#### Accessing data via pgAdmin
+Go to the [pgAdmin web UI](http://localhost:5050/browser/) and login with the following credentials:
+```
+admin@admin.com
+admin
+```
+
+![pgAdmin login](assets/images/readme/pgAdminLogin.png)
+
+Right click the *Servers* row and press *Create* in the *Register* menu.
+
+![pgAdmin server registration](assets/images/readme/pgAdminRegisterServer.png)
+
+Name the server any way you want.
+
+![pgAdmin server name](assets/images/readme/pgAdminServerName.png)
+
+Enter the following values:
+*db* for the host name/address
+*user* for the username anad password
+Afterwards, press *Save*.
+
+![pgAdmin server connection](assets/images/readme/pgAdminServerConnection.png)
+
+View the tables by opening the *dev_smart_home_db* database, the *public* schema and the *tables* collection.
+
+![pgAdmin tables](assets/images/readme/pgAdminTables.png)

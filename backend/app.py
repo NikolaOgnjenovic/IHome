@@ -10,7 +10,7 @@ from services.preference_service import PreferenceService
 from services.sensor_service import SensorService
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/preferences_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:user@db/dev_smart_home_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 swagger = Swagger(app)
@@ -28,6 +28,7 @@ sensor_service = SensorService(sensor_repository)
 app.register_blueprint(preferences_controller_factory(preference_service))
 app.register_blueprint(sensors_controller_factory(sensor_service))
 
+
 @app.route('/play', methods=['GET'])
 def play():
     video_url = request.args.get('video_name')
@@ -37,10 +38,12 @@ def play():
     play_audio(video_url)
     return Response(status=200)
 
+
 @app.route('/stop', methods=['GET'])
 def stop():
     stop_audio()
     return Response(status=200)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
